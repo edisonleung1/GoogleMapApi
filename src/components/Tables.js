@@ -1,70 +1,55 @@
 import React,{useState} from 'react';
 import {Table,Divider,Button} from 'antd';
 
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-  },
-];
+const Tables=(props)=>{
 
-interface DataType {
-  key: React.Key;
-  name: string;
-  age: number;
-  address: string;
-}
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+    },
+  ];
 
-const data: DataType[] = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Disabled User2',
-    age: 99,
-    address: 'Sidney No. 1 Lake Park',
-  },
-];
-
-// rowSelection object indicates the need for row selection
-const rowSelection = {
-  onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+  interface DataType {
+    key: React.Key;
+    name: string;
+    address: string;
   }
-}
 
-const delete2 =(props)=>{
-  this.props.delete();
-}
+  let data: DataType[] = [];
 
-const Tables=()=>{
+  const[reload,setReload]=useState(false);
+
+  /*const result=(props)=>{
+    let tmp={};
+    let tmp2={};
+      for(let i=0;i<props.results.length;i++){
+        tmp=props.results[i];
+        tmp2=Object.assign({key:tmp.place_id,name:tmp.name,address:tmp.vicinity});
+        data.push(tmp2);
+        //console.log(data);
+    }
+    setReload(true);
+  }*/
+
+  // rowSelection object indicates the need for row selection
+  const rowSelection = {
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    }
+  }
+
+  const deletedata =(props)=>{
+    this.props.delete();
+  }
+
   return (
     <div>
-      <Button type="primary" onClick={delete2}>
+      <Button type="primary" onClick={deletedata}>
         Delete
       </Button>
       <Divider />

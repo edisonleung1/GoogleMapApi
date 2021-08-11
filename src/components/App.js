@@ -6,7 +6,8 @@ import Tables from './Tables';
 import 'antd/dist/antd.css'
 
 export class App extends Component {
-  state={lat:'',lng:''};
+  state={lat:'',lng:'',name:'',results:[]};
+
   getlocation=()=>{
     window.navigator.geolocation.getCurrentPosition(position=>{
       this.setState({lat:position.coords.latitude,lng:position.coords.longitude});
@@ -16,17 +17,36 @@ export class App extends Component {
     });
   }
 
+  search=(name)=>{
+    this.setState({name:name})
+  }
+
+  results=(results)=>{
+    this.setState({results:results});
+  }
+
   delete=()=>{
     console.log("delete");
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    Object.entries(this.props).forEach(([key, val]) =>
+      prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+    );
+    if (this.state) {
+      Object.entries(this.state).forEach(([key, val]) =>
+        prevState[key] !== val && console.log(`State '${key}' changed`)
+      );
+    }
   }
 
   render() {
     return (
       <div>
       <GetLocation onClick={this.getlocation}/>
-      <Searchbox />
-      <Map lat={this.state.lat} lng={this.state.lng} />
-      <Tables delete={this.delete} />
+      <Searchbox search={this.search} />
+      <Map lat={this.state.lat} lng={this.state.lng} name={this.state.name} results={this.results}/>
+      <Tables results={this.state.results} delete={this.delete} />
       </div>
     );
   }

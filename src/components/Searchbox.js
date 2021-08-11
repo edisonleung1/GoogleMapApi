@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Space } from 'antd';
+import { Input } from 'antd';
 
 const { Search } = Input;
 
@@ -8,9 +8,7 @@ class Searchbox extends React.Component{
   state={term:''};
   onSubmit=event=>{
     //event.preventDefault();
-    //this.props.onSubmit(this.state.term);
-      console.log(this.state.term);
-
+    this.props.search(this.state.term);
   };
 
 

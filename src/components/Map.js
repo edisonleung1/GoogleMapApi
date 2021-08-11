@@ -1,49 +1,62 @@
-import React from 'react';
-import GoogleMapReact from 'google-map-react';
+import React,{useState,useRef,useEffect} from 'react';
 const keys=require('../config/keys');
-//import * as script from "https://maps.googleapis.com/maps/api/js?key=AIzaSyD5gKYClUYvfmTPUhbkvEk41zqduLVWOew&callback=initMap";
 
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
+const Map = (props) => {
 
-const Map=(props)=>{
-
-  let location={};
+/*  const [lat, setLat] = useState(43.651070);
+  const [lng, setLng] = useState(-79.347015);
   if((props.lat!=='') && (props.lng!=='')){
-    location={
-      center: {
-        lat: props.lat,
-        lng: props.lng
-      },
-      zoom: 11
-    }
+    setLat(props.lat);
+    setLng(props.lng);
+  };
+
+*/
+  const googleMapRef = useRef();
+  let googleMap,center,lat,lng;
+  if((props.lat!=='') && (props.lng!=='')){
+    lat=props.lat;
+    lng=props.lng;
   }
   else{
-    location={
-      center:{
-        lat: 43.651070,
-        lng: -79.347015
-      },
-      zoom: 11
-    }
+    lat=43.651070;
+    lng=-79.347015;
   }
-  const handleApiLoaded = (map, maps) => {
-    // use map and maps objects
-    console.log('載入完成!') // 印出「載入完成」
-  };
-    return(
-      <div style={{ height: '500px', width: '100%' }}>
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: keys.googleKey,language:'en'}}
-          center={location.center}
-          zoom={location.zoom}
-          yesIWantToUseGoogleMapApiInternals
-          onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-        >
+  useEffect(() => {
+    const googleMapScript = document.createElement("script");
+    googleMapScript.src = `https://maps.googleapis.com/maps/api/js?key=${keys.googleKey}&language=en&libraries=places`;
+    googleMapScript.async = true;
+    window.document.body.appendChild(googleMapScript);
+    googleMapScript.addEventListener("load", () => {
+      createGoogleMap();
+    });
+  }, []);
 
-        </GoogleMapReact>
-      </div>
-    );
-  //return <div>{displaymap()}</div>;
-}
+  const createGoogleMap = () => {
+    center={
+      lat: lat,
+      lng: lng,
+    }
+    googleMap = new window.google.maps.Map(googleMapRef.current, {
+      zoom: 11,
+      disableDefaultUI: true,
+      center: center,
+    });
+    new window.google.maps.Marker({
+      position: { lat, lng },
+      map: googleMap,
+      animation: window.google.maps.Animation.DROP,
+      title:`You Location`,
+    });
+  };
+
+  return (
+    <div
+      id="google-map"
+      ref={googleMapRef}
+      style={{ width: "100%", height: "500px" }}
+    />
+  );
+};
+
 
 export default Map;
