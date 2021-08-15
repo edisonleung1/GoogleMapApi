@@ -6,8 +6,7 @@ import Tables from './Tables';
 import 'antd/dist/antd.css'
 
 export class App extends Component {
-  state={lat:'',lng:'',name:'',results:[]};
-
+  state={lat:null,lng:null,name:null,results:[]};
   getlocation=()=>{
     window.navigator.geolocation.getCurrentPosition(position=>{
       this.setState({lat:position.coords.latitude,lng:position.coords.longitude});
@@ -18,10 +17,10 @@ export class App extends Component {
   }
 
   search=(name)=>{
-    this.setState({name:name})
+    this.setState({name:name});
   }
 
-  results=(results)=>{
+  updateresults=(results)=>{
     this.setState({results:results});
   }
 
@@ -45,7 +44,7 @@ export class App extends Component {
       <div>
       <GetLocation onClick={this.getlocation}/>
       <Searchbox search={this.search} />
-      <Map lat={this.state.lat} lng={this.state.lng} name={this.state.name} results={this.results}/>
+      <Map lat={this.state.lat} lng={this.state.lng} error={this.state.errorMessage} name={this.state.name} updateresults={this.updateresults}/>
       <Tables results={this.state.results} delete={this.delete} />
       </div>
     );

@@ -3,19 +3,20 @@ import { Input } from 'antd';
 
 const { Search } = Input;
 
+let term='';
+
 class Searchbox extends React.Component{
 
-  state={term:''};
-  onSubmit=event=>{
-    //event.preventDefault();
-    this.props.search(this.state.term);
+  onSubmit=(event)=>{
+    event.preventDefault();
+    this.props.search(term);
   };
 
 
   render(){
     return(
         <div>
-          <Search placeholder="input search text" allowClear  enterButton="Search"  size="large" onChange={e=>this.setState({term:e.target.value})} onPressEnter={this.onSubmit} onSearch={this.onSubmit} />
+          <Search placeholder="input search text" allowClear  enterButton="Search"  size="large" onChange={e=>term=e.target.value} onPressEnter={this.onSubmit} onSearch={this.onSubmit} />
         </div>
 
     );

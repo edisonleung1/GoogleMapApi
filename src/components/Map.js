@@ -3,50 +3,53 @@ const keys=require('../config/keys');
 
 const Map = (props) => {
 
-/*  const [lat, setLat] = useState(43.651070);
-  const [lng, setLng] = useState(-79.347015);
-  if((props.lat!=='') && (props.lng!=='')){
-    setLat(props.lat);
-    setLng(props.lng);
-  };
-
-*/
   const googleMapRef = useRef();
-  let googleMap,center,lat,lng;
-  if((props.lat!=='') && (props.lng!=='')){
-    lat=props.lat;
-    lng=props.lng;
-  }
-  else{
-    lat=43.651070;
-    lng=-79.347015;
-  }
+  let googleMap,service,center;
   useEffect(() => {
     const googleMapScript = document.createElement("script");
     googleMapScript.src = `https://maps.googleapis.com/maps/api/js?key=${keys.googleKey}&language=en&libraries=places`;
     googleMapScript.async = true;
     window.document.body.appendChild(googleMapScript);
-    googleMapScript.addEventListener("load", () => {
-      createGoogleMap();
-    });
-  }, []);
-
-  const createGoogleMap = () => {
     center={
-      lat: lat,
-      lng: lng,
-    }
+      lat:props.lat,
+      lng:props.lng
+    };
+    googleMapScript.addEventListener("load", () => {
+      createGoogleMap(center);
+    });
+  }, [props.lat,props.lng,props.name]);
+
+  const createGoogleMap=(center)=> {
+
     googleMap = new window.google.maps.Map(googleMapRef.current, {
+      center: center,
       zoom: 11,
       disableDefaultUI: true,
-      center: center,
     });
-    new window.google.maps.Marker({
-      position: { lat, lng },
-      map: googleMap,
-      animation: window.google.maps.Animation.DROP,
-      title:`You Location`,
+
+    const request = {
+      query: props.name,
+      fields: ["name", "geometry","formatted_address"],
+    };
+    
+    service = new window.google.maps.places.PlacesService(googleMap);
+    service.findPlaceFromQuery(request, (results, status) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
+        for (let i = 0; i < results.length; i++) {
+          props.updateresults(results);
+          createMarker(results[i]);
+        }
+        googleMap.setCenter(results[0].geometry.location);
+      }
     });
+
+    function createMarker(place) {
+      if (!place.geometry || !place.geometry.location) return;
+      const marker = new window.google.maps.Marker({
+        map:googleMap,
+        position: place.geometry.location,
+      });
+    };
   };
 
   return (
